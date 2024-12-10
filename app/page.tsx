@@ -3,6 +3,7 @@ import home_photo from "@/public/home_photo.jpg";
 import React from "react";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
+import {SignIn} from "@/components/auth/sign-in";
 
 export default function Home() {
     return (
@@ -25,14 +26,7 @@ export default function Home() {
                     your career. We offer a wide range of courses that are
                     designed to help you achieve your goals.
                 </p>
-                <div className="mt-10 space-x-3">
-                    <Button asChild>
-                        <Link href="/login">Login</Link>
-                    </Button>
-                    <Button asChild>
-                        <Link href="/register">Register</Link>
-                    </Button>
-                </div>
+                <SignIn/>
             </div>
         </main>
     )

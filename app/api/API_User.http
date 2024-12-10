@@ -23,3 +23,12 @@ Content-Type: application/json
   "name": "John Doe",
   "email": "mrrnee@gmail.com"
 }
+
+###
+POST http://localhost:3000/api/register
+Content-Type: application/json
+
+{
+  "email": "mrrnee011@gmail.com",
+  "password": "1234568966"
+}
