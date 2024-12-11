@@ -1,24 +1,30 @@
 import React from 'react';
-import Sidebar from "@/app/dashboard/sidebar";
-import RecentPost from "@/app/dashboard/recent-post";
-import MainContent from "@/app/dashboard/main-content-list";
+import Sidebar from "@/app/dashboard/_component/sidebar";
+import ContentBlock from "@/app/dashboard/_component/content-block";
+import MainContent from "@/app/dashboard/_component/main-content-list";
+import RecentPost from "@/app/dashboard/_component/recent-post";
 
 function DashboardPage() {
+    // 1024
     return (
-        <div className="grid grid-cols-12 grid-rows-1">
-            <div className="bg-blue-400 col-span-2">
-                <Sidebar/>
+        <div className="grid grid-cols-1 md:grid-cols-10 border-2 border-black h-screen">
+            <div className="hidden md:block md:col-span-2  sticky bg-blue-500 border-1 border-black">
+                <ContentBlock>
+                    <Sidebar/>
+                </ContentBlock>
             </div>
-            <div className="bg-emerald-600 col-span-8">
-
-                <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-                <p className="text-lg">Welcome to your dashboard</p>
+            <div className="col-span-1 md:col-span-5 bg-green-500 border-1 border-black">
+                <ContentBlock>
+                    <MainContent/>
+                </ContentBlock>
             </div>
-            <div className="bg-amber-50 col-span-2 ">
-                <h2 className="text-lg font-semibold mb-2">Recent Posts</h2>
+            <div className="hidden md:block md:col-span-3 bg-red-500 border-1 border-black">
+                <ContentBlock>
+                    <RecentPost/>
+                </ContentBlock>
             </div>
-
         </div>
+
     );
 }
 

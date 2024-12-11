@@ -2,9 +2,10 @@ import React from 'react';
 
 function MainContent() {
     return (
-            <div className="max-w-3xl mx-auto">
-
-            </div>
+        <div className="bg-green-500 w-full h-full">
+            Main Content
+        </div>
     );
 }
+
 export default MainContent;
