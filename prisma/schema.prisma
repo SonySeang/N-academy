@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +8,54 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Post {
+  postId      String     @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?
+  userId      String
+  communityId String
+  categoryId  String
+  user        User       @relation(fields: [userId], references: [id])
+  categories  Category[] @relation("PostCategories")
+  comments    Comment[]
+  community   Community  @relation(fields: [communityId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String
+  posts Post[] @relation("PostCategories")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  postId    String
+  post      Post     @relation(fields: [postId], references: [postId])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Community {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+  users       User[]   @relation("UserCommunities")
 }
 
 model User {
@@ -23,10 +68,13 @@ model User {
   sessions       Session[]
   hashedPassword String?
   // Optional for WebAuthn support
-  Authenticator  Authenticator[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  authenticators Authenticator[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  posts          Post[]
+  comments       Comment[]
+  communities    Community[]     @relation("UserCommunities")
+  role           Role            @default(USER)
 }
 
 model Account {
@@ -34,16 +82,16 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
+  refreshToken      String?
+  accessToken       String?
+  expiresAt         Int?
+  tokenType         String?
   scope             String?
-  id_token          String?
-  session_state     String?
+  idToken           String?
+  sessionState      String?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -57,7 +105,7 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now())
 }
 
 model VerificationToken {
