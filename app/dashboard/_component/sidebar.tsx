@@ -2,8 +2,8 @@ import React from 'react';
 
 function Sidebar() {
     return (
-        <ul className="  p-4 shadow-md">
-            <li className="py-2">Home</li>
+        <ul className="bg-blue-400 w-full h-full">
+            <li>Home</li>
             <li className="py-2">Explore</li>
             <li className="py-2">Following</li>
             <li className="py-2 mt-10">Community</li>
