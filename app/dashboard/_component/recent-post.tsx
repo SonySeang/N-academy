@@ -2,7 +2,7 @@ import React from 'react';
 
 function RecentPost() {
     return (
-        <aside className="bg-red-700 w-full h-full">
+        <aside className=" text-center mt-6 ">
             <h2>Recent Posts</h2>
         </aside>
     );

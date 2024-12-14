@@ -1,8 +1,6 @@
 import Image from "next/image";
 import home_photo from "@/public/home_photo.jpg";
 import React from "react";
-import {Button} from "@/components/ui/button";
-import Link from "next/link";
 import {SignIn} from "@/components/auth/sign-in";
 
 export default function Home() {

@@ -1,9 +1,16 @@
 import React from 'react';
+import {cn} from "@/lib/utils";
 
-function ContentBlock({children}: { children: React.ReactNode }) {
+type ContentBlockProps = {
+    className?: string;
+    children: React.ReactNode;
+}
+
+function ContentBlock({children, className}: ContentBlockProps) {
     return (
-        <div className="bg-[#F7F8FA] shadow-sm rounded-md overflow-hidden h-full w-full"
-        >{children}</div>
+        <div className={cn(" border-gray-200  rounded-md overflow-hidden  ", className)}>
+            {children}
+        </div>
     );
 }
 
