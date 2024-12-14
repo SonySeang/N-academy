@@ -11,41 +11,31 @@ datasource db {
 }
 
 model Post {
-  postId      String     @id @default(cuid())
-  title       String
-  description String?
-  imageUrl    String?
-  userId      String
-  communityId String
-  categoryId  String
-  user        User       @relation(fields: [userId], references: [id])
-  categories  Category[] @relation("PostCategories")
-  comments    Comment[]
-  community   Community  @relation(fields: [communityId], references: [id])
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  postId      String   @id @default(uuid())
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  imageUrl    String?  @db.VarChar(255)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Category {
-  id    String @id @default(cuid())
-  name  String
-  posts Post[] @relation("PostCategories")
+  id   String @id @default(cuid())
+  name name   @unique
+}
+
+enum name {
+  AI
+  Blockchain
+  Cloud
+  Cybersecurity
+  WEB
+  MACHINE_LEARNING
 }
 
 enum Role {
   USER
   ADMIN
-}
-
-model Comment {
-  id        String   @id @default(cuid())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  postId    String
-  post      Post     @relation(fields: [postId], references: [postId])
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Community {
@@ -54,7 +44,6 @@ model Community {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  posts       Post[]
   users       User[]   @relation("UserCommunities")
 }
 
@@ -67,12 +56,9 @@ model User {
   accounts       Account[]
   sessions       Session[]
   hashedPassword String?
-  // Optional for WebAuthn support
   authenticators Authenticator[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  posts          Post[]
-  comments       Comment[]
   communities    Community[]     @relation("UserCommunities")
   role           Role            @default(USER)
 }
