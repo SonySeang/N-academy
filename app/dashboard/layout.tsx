@@ -6,10 +6,19 @@ import prisma from '@/prisma/client';
 import SearchContextProvider from '../context/search-post-provider';
 import ContentBlock from './_component/content-block';
 import Sidebar from './_component/sidebar';
-import RecentPost from "@/app/dashboard/_component/recent-post";
+import {auth} from "@/lib/auth";
+import { redirect } from 'next/navigation';
 
 const DashboardLayout = async ({children}: { children: React.ReactNode }) => {
-    const post = await prisma.post.findMany()
+    const session = await auth()
+    if (!session?.user){
+        redirect('/sign-in')
+    }
+    const post = await prisma.post.findMany({
+        where : {
+            userId : session.user.id
+        }
+    })
     return (
         <SearchContextProvider>
             <PostContextProvider data={post}>

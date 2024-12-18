@@ -4,32 +4,27 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { usePostContext } from "@/lib/hook";
-import PostFormBtn from "./post-form-btn";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@/components/ui/separator";
-
-const postFormSchema = z.object({
-  title: z.string().min(3, { message: "Title is Required " }).max(100),
-  description: z
-    .string()
-    .min(3, { message: "Description is Required " })
-    .max(100),
-  imageUrl: z.union([
-    z.literal(""),
-    z.string().url({ message: "Invalid URL" }),
-  ]),
-});
+import PostFormBtn from "../../_component/post-form-btn";
+import { postFormSchema } from "@/lib/validation";
+import prisma from "@/prisma/client";
 
 type TPostForm = z.infer<typeof postFormSchema>;
 
 interface PostFormProps {
   actionType: "create" | "update" | "delete" | "cancel";
+  params: { postId: string };
 }
 
-function PostForm({ actionType }: PostFormProps) {
-  const { handleAddPost } = usePostContext();
+function EditPost({ actionType, params }: PostFormProps) {
+  const post = prisma.post.findUnique({
+    where: { postId: params.postId },
+  });
+  if (!post) return <div>Post not found</div>;
+  const { handleEditPost, selectedPost } = usePostContext();
   const {
     trigger,
     register,
@@ -37,21 +32,20 @@ function PostForm({ actionType }: PostFormProps) {
     getValues,
   } = useForm<TPostForm>({
     resolver: zodResolver(postFormSchema),
+    defaultValues: {
+      title: selectedPost?.postId,
+      description: selectedPost?.postId,
+      imageUrl: selectedPost?.postId,
+    },
   });
-
-  const router = useRouter();
   return (
     <form
       action={async () => {
-        // getValues() is a function that returns the form values
         const postData = getValues();
         const result = await trigger();
         if (!result) return;
 
-        if (actionType === "create") {
-          await handleAddPost(postData);
-          router.push("/dashboard");
-        }
+        await handleEditPost(selectedPost!.postId, postData);
       }}
     >
       <p className="text-2xl mt-2">Create Post ...</p>
@@ -60,7 +54,7 @@ function PostForm({ actionType }: PostFormProps) {
       <div className="flex flex-col space-y-4 w-[500px] mt-5  m-5">
         <div>
           <label htmlFor="title">Title</label>
-          <Input id="title" {...register("title")} name="title" />
+          <Input id="title" {...register("title")} />
           {errors.title && (
             <span className="text-red-500">{errors.title.message}</span>
           )}
@@ -71,18 +65,14 @@ function PostForm({ actionType }: PostFormProps) {
         </div>
         <div>
           <label htmlFor="description">Description</label>
-          <Input
-            id="description"
-            {...register("description")}
-            name="description"
-          />
+          <Input id="description" {...register("description")} />
           {errors.description && (
             <span className="text-red-500">{errors.description.message}</span>
           )}
         </div>
 
         <div className="flex flex-row justify-end gap-4">
-          <PostFormBtn actionType={actionType} />
+          <PostFormBtn actionType={actionType}></PostFormBtn>
         </div>
       </div>
       {/* <Button type="submit" variant="default"></Button> */}
@@ -90,4 +80,4 @@ function PostForm({ actionType }: PostFormProps) {
   );
 }
 
-export default PostForm;
+export default EditPost;

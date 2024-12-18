@@ -15,7 +15,7 @@ async function LinkContainer({className, params}: Props) {
     });
     if (!post) return <div>Post not found</div>;
     return (
-        <Link href={`/dashboard/pagedetail/${post.postId}`} className={cn("hover:bg-[#BCCCDC]/10", className)}>Click to See
+        <Link href={`/dashboard/page-detail/${post.postId}`} className={cn("hover:bg-[#BCCCDC]/10", className)}>Click to See
             Detail
         </Link>
     );
